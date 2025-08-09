@@ -4,6 +4,7 @@ import { format, formatDate } from "date-fns";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Badge } from "./ui/badge";
+import { BorderStyles } from "@/app/(main)/editor/BorderStyleButton";
 
 const ResumePreview = ({ resumeData, className }) => {
     const containerRef = useRef(null)
@@ -29,6 +30,11 @@ const ResumePreview = ({ resumeData, className }) => {
                         height={100}
                         alt="Author Photo"
                         className="aspect-square object-cover"
+                        style={{ 
+                            borderRadius: borderStyle === BorderStyles.SQUARE ?
+                            "0px" : borderStyle === BorderStyles.CIRCLE ?
+                            "9999px" : "10%"
+                        }}
                     />
                 )}
                 <div className="space-y-2.5">
@@ -158,7 +164,7 @@ const ResumePreview = ({ resumeData, className }) => {
     }
 
     const SkillsSection = ({ resumeData }) => {
-        const { skills, colorHex } = resumeData
+        const { skills, colorHex, borderStyle } = resumeData
         if (!skills?.length) return null
 
         return (
@@ -178,7 +184,10 @@ const ResumePreview = ({ resumeData, className }) => {
                         {skills.map((skill, i) => (
                             <Badge className="bg-black text-white" key={i}
                                 style={{ 
-                                    backgroundColor: colorHex
+                                    backgroundColor: colorHex,
+                                    borderRadius: borderStyle === BorderStyles.SQUARE ?
+                                    "0px" : borderStyle === BorderStyles.CIRCLE ?
+                                    "9999px" : "8px"
                                 }}
                             >
                                 {skill}

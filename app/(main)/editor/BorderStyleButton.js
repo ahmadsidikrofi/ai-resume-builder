@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Squircle } from "lucide-react";
+import { Squircle, Square, Circle } from "lucide-react";
 
 export const BorderStyles = {
     SQUARE: 'square',
@@ -13,7 +13,7 @@ const BorderStyleButton = ({ borderStyle, onChange }) => {
     const handleClick = () => {
         const currentIndex = borderStyle ? borderStyles.indexOf(borderStyle) : 0
         const nextIndex = (currentIndex + 1) % borderStyles.length
-        onChange(borderStyles(nextIndex))
+        onChange(borderStyles[nextIndex])
     }
 
     const Icon = borderStyle === "square" ? 
