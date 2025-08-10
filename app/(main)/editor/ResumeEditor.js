@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import useAutoSaveResume from "./useAutoSaveResume";
 import useUnloadWarning from "@/app/hooks/useUnloadWarning";
 
-const ResumeEditor = () => {
+const ResumeEditor = ({ resumeToEdit }) => {
     const searchParams = useSearchParams()
     const [ resumeData, setResumeData ] = useState({})
     const currentStep = searchParams.get("step") || steps[0].key
