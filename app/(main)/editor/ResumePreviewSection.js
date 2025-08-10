@@ -1,10 +1,11 @@
 import ResumePreview from "@/components/ResumePreview";
 import ColorPicker from "./forms/ColorPicker";
 import BorderStyleButton from "./BorderStyleButton";
+import { cn } from "@/lib/utils";
 
-const ResumePreviewSection = ({ resumeData, setResumeData }) => {
+const ResumePreviewSection = ({ resumeData, setResumeData, className }) => {
     return (
-      <div className="group w-1/2 md:flex hidden relative">
+      <div className={cn("group md:w-1/2 w-full md:flex hidden relative", className)}>
         <div className="absolute left-1 top-1 lg:left-3 lg:top-3 flex flex-col gap-3 flex-none opacity-25 xl:opacity-100 group-hover:opacity-100 transition-opacity">
           <ColorPicker
             color={resumeData.colorHex}

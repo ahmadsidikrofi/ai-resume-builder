@@ -3,18 +3,33 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { workExperienceSchema } from "@/lib/validated";
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GripHorizontal } from "lucide-react";
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { CSS } from "@dnd-kit/utilities"
 
 // Pindahkan WorkExperienceItem ke luar komponen utama untuk mencegah re-creation
-const WorkExperienceItem = ({ index, form, remove }) => {
+const WorkExperienceItem = ({ index, form, remove, id }) => {
+    const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({ id })
     return (
-        <div className="border space-y-3 rounded-md p-3 bg-background">
+        <div 
+            className={`border space-y-3 rounded-md p-3 bg-background ${isDragging && 'relative z-50 shadow-xl cursor-grab'}`}
+            ref={setNodeRef}
+            style={{ 
+                transform: CSS.Transform.toString(transform),
+                transition
+             }}
+        >
             <div className="flex justify-between">
                 <span className="font-semibold">Work Experience {index + 1}</span>
-                <GripHorizontal className="size-5 cursor-grab text-green-500" />
+                <GripHorizontal className="size-5 cursor-grab text-green-500 focus:outline-none" 
+                    {...listeners}
+                    {...attributes}
+                />
             </div>
 
             <FormField 
@@ -108,10 +123,27 @@ const WorkExperienceForm = ({ resumeData, setResumeData }) => {
         return unsubscribe
     }, [form, resumeData, setResumeData])
 
-    const { fields, append, remove } = useFieldArray({
+    const { fields, append, remove, move } = useFieldArray({
         control: form.control,
         name: "workExperiences"
     })
+
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates
+        })
+    )
+
+    const handleDragEnd = (event) => {
+        const { active, over } = event
+        if (over && active.id !== over.id) {
+            const oldIndex = fields.findIndex((field) => field.id === active.id)
+            const newIndex = fields.findIndex((field) => field.id === over.id)
+            move(oldIndex, newIndex)
+            return arrayMove(fields, oldIndex, newIndex)
+        }
+    }
 
     return (  
         <div className="max-w-xl mx-auto space-y-6">
@@ -121,13 +153,26 @@ const WorkExperienceForm = ({ resumeData, setResumeData }) => {
             </div>
             <Form {...form}>
                 <form className="space-y-5">
-                    {fields.map((field, index) => (
-                        <WorkExperienceItem key={field.id} 
-                            index={index}
-                            form={form}
-                            remove={remove}
-                        />
-                    ))}
+                    <DndContext
+                        sensors={sensors}
+                        onDragEnd={handleDragEnd}
+                        collisionDetection={closestCenter}
+                        modifiers={[restrictToVerticalAxis]}
+                    >
+                        <SortableContext
+                            items={fields}
+                            strategy={verticalListSortingStrategy}
+                        >
+                            {fields.map((field, index) => (
+                                <WorkExperienceItem key={field.id} 
+                                    id={field.id}
+                                    index={index}
+                                    form={form}
+                                    remove={remove}
+                                />
+                            ))}
+                        </SortableContext>
+                    </DndContext>
                     <div className="flex justify-center">
                         <Button
                             type="button"

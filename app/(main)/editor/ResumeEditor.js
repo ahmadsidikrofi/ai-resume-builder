@@ -6,12 +6,13 @@ import Breadcrumbs from "./Breadcrumbs";
 import Footer from "./footer";
 import { useState } from "react";
 import ResumePreviewSection from "./ResumePreviewSection";
+import { cn } from "@/lib/utils";
 
 const ResumeEditor = () => {
     const searchParams = useSearchParams()
     const [ resumeData, setResumeData ] = useState({})
     const currentStep = searchParams.get("step") || steps[0].key
-
+    const [showSmallResumePreview, setShowSmallResumePreview] = useState(false)
     function setStep(key) {
         const newSearchParams = new URLSearchParams(searchParams)
         newSearchParams.set("step", key)
@@ -21,7 +22,6 @@ const ResumeEditor = () => {
     const FormComponent = steps.find(
         (step) => step.key === currentStep
     )?.component
-
 
     return ( 
         <div className="flex grow flex-col">
@@ -34,7 +34,7 @@ const ResumeEditor = () => {
             </header>
             <main className="relative grow">
                 <div className="absolute bottom-0 top-0 flex w-full">
-                    <div className="md:w-1/2 w-full p-3 overflow-y-auto space-y-6">
+                    <div className={cn("md:w-1/2 w-full p-3 overflow-y-auto space-y-6 md:block", showSmallResumePreview && "hidden")}>
                         <Breadcrumbs currentStep={currentStep} setCurrentStep={setStep} />
                         {FormComponent && <FormComponent resumeData={resumeData} setResumeData={setResumeData} /> }
                     </div>
@@ -42,10 +42,15 @@ const ResumeEditor = () => {
                     <ResumePreviewSection 
                         resumeData={resumeData}
                         setResumeData={setResumeData}
+                        className={cn(showSmallResumePreview && "flex")}
                     />
                 </div>
             </main>
-            <Footer currentStep={currentStep} setCurrentStep={setStep} />
+            <Footer currentStep={currentStep} 
+                setCurrentStep={setStep} 
+                showSmallResumePreview={showSmallResumePreview} 
+                setShowSmallResumePreview={setShowSmallResumePreview}
+            />
         </div>
     );
 }

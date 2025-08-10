@@ -2,17 +2,33 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { educationSchema } from "@/lib/validated";
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GripHorizontal } from "lucide-react";
 import { useCallback, useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { CSS } from "@dnd-kit/utilities"
+import { cn } from "@/lib/utils";
 
-const EducationItem = ({ index, form, remove }) => {
+const EducationItem = ({ index, form, remove, id }) => {
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
     return (
-        <div className="border space-y-3 bg-background rounded-md p-3">
+        <div 
+            className={cn("border space-y-3 bg-background rounded-md p-3", isDragging && "relative z-50 cursor-grab shadow-xl")}
+            style={{ 
+                transition,
+                transform: CSS.Transform.toString(transform)
+             }}
+            ref={setNodeRef}
+        >
             <div className="flex justify-between">
                 <span className="font-semibold">Education {index + 1}</span>
-                <GripHorizontal className="size-5 cursor-grab text-green-500" />
+                <GripHorizontal className="size-5 cursor-grab text-green-500 focus:outline-none"
+                    {...listeners}
+                    {...attributes}
+                />
             </div>
 
             <FormField
@@ -92,10 +108,27 @@ const EducationForm = ({ resumeData, setResumeData }) => {
         return unsubscribe;
     }, [form, resumeData, setResumeData]);
 
-    const { fields, append, remove } = useFieldArray({
+    const { fields, append, remove, move } = useFieldArray({
         control: form.control,
         name: "educations"
     })
+
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates
+        })
+    )
+
+    const handleDragEnd = (event) => {
+        const { active, over } = event
+        if (over && active.id !== over.id) {
+            const oldIndex = fields.findIndex((field) => field.id === active.id)
+            const newIndex = fields.findIndex((field) => field.id === over.id)
+            move(oldIndex, newIndex)
+            return arrayMove(fields, oldIndex, newIndex)
+        }
+    }
 
     return ( 
         <div className="max-w-xl mx-auto space-y-6">
@@ -105,13 +138,26 @@ const EducationForm = ({ resumeData, setResumeData }) => {
             </div>
             <Form {...form}>
                 <form className="space-y-5">
-                    {fields.map((field, i) => (
-                        <EducationItem key={field.id} 
-                            index={i}
-                            form={form}
-                            remove={remove}
-                        />
-                    ))}
+                    <DndContext
+                        sensors={sensors}
+                        onDragEnd={handleDragEnd}
+                        collisionDetection={closestCenter}
+                        modifiers={[restrictToVerticalAxis]}
+                    >
+                        <SortableContext
+                            items={fields}
+                            strategy={verticalListSortingStrategy}
+                        >
+                            {fields.map((field, i) => (
+                                <EducationItem key={field.id}
+                                    id={field.id}
+                                    index={i}
+                                    form={form}
+                                    remove={remove}
+                                />
+                            ))}
+                        </SortableContext>
+                    </DndContext>
                     <div className="flex justify-center">
                         <Button
                             type="button"

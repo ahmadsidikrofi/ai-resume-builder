@@ -23,7 +23,9 @@ const Footer = ({
                 <div className="flex gap-3 items-start">
                     <Button variant="secondary" disabled={!previousStep}  onClick={previousStep ? () => setCurrentStep(previousStep) : undefined}>Previous step</Button>
                     <Button disabled={!nextStep} onClick={nextStep ? () => setCurrentStep(nextStep) : undefined}>Next step</Button>
-                    <Button variant="outline" size="icon" onClick={() => setShowSmallResumePreview(!showSmallResumePreview)} className="md:hidden">
+                    <Button variant="outline" size="icon" onClick={() => setShowSmallResumePreview(!showSmallResumePreview)} className="md:hidden"
+                        title={showSmallResumePreview ? "Show input form" : "Show resume preview"}
+                    >
                         {showSmallResumePreview ? <PencilLine /> : <FileUserIcon />}
                     </Button>
                 </div>
