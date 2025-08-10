@@ -6,13 +6,13 @@ import Breadcrumbs from "./Breadcrumbs";
 import Footer from "./footer";
 import { useState } from "react";
 import ResumePreviewSection from "./ResumePreviewSection";
-import { cn } from "@/lib/utils";
+import { cn, mapToResumeValues } from "@/lib/utils";
 import useAutoSaveResume from "./useAutoSaveResume";
 import useUnloadWarning from "@/app/hooks/useUnloadWarning";
 
 const ResumeEditor = ({ resumeToEdit }) => {
     const searchParams = useSearchParams()
-    const [ resumeData, setResumeData ] = useState({})
+    const [ resumeData, setResumeData ] = useState(resumeToEdit ? mapToResumeValues(resumeToEdit) : {})
     const currentStep = searchParams.get("step") || steps[0].key
     const [showSmallResumePreview, setShowSmallResumePreview] = useState(false)
     

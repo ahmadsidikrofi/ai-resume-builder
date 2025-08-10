@@ -211,6 +211,7 @@ const ResumePreview = ({ resumeData, className }) => {
                     zoom: (1 / 794) * width
                 }}
             >
+                {/* <pre>{JSON.stringify(resumeData, null, 2)}</pre> */}
                 <PersonalInfoHeader resumeData={resumeData} />
                 <SummarySection resumeData={resumeData} />
                 <WorkExperienceSection resumeData={resumeData} />
