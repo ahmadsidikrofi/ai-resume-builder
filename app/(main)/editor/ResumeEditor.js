@@ -7,12 +7,18 @@ import Footer from "./footer";
 import { useState } from "react";
 import ResumePreviewSection from "./ResumePreviewSection";
 import { cn } from "@/lib/utils";
+import useAutoSaveResume from "./useAutoSaveResume";
+import useUnloadWarning from "@/app/hooks/useUnloadWarning";
 
 const ResumeEditor = () => {
     const searchParams = useSearchParams()
     const [ resumeData, setResumeData ] = useState({})
     const currentStep = searchParams.get("step") || steps[0].key
     const [showSmallResumePreview, setShowSmallResumePreview] = useState(false)
+    
+    const { isSaving, hasUnsavedChanges } = useAutoSaveResume(resumeData)
+    useUnloadWarning(hasUnsavedChanges)
+    
     function setStep(key) {
         const newSearchParams = new URLSearchParams(searchParams)
         newSearchParams.set("step", key)
@@ -50,6 +56,7 @@ const ResumeEditor = () => {
                 setCurrentStep={setStep} 
                 showSmallResumePreview={showSmallResumePreview} 
                 setShowSmallResumePreview={setShowSmallResumePreview}
+                isSaving={isSaving}
             />
         </div>
     );

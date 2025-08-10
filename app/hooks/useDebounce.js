@@ -7,7 +7,7 @@ export default function useDebounce(value, delay = 250) {
         const handler = setTimeout(() => {
             setDebounceValue(value)
         }, delay)
-        return clearTimeout(handler)
+        return () => clearTimeout(handler)
     }, [delay, value])
 
     return debounceValue
