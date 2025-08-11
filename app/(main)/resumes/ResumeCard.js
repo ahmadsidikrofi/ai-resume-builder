@@ -5,12 +5,14 @@ import ResumePreview from "@/components/ResumePreview";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { deleteResume } from "@/lib/server/existingResumeActions";
 import { mapToResumeValues } from "@/lib/utils";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import { formatDate } from "date-fns";
-import { MoreVerticalIcon, Trash2 } from "lucide-react";
+import { MoreVerticalIcon, Trash2, X } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
+import { toast } from "sonner";
 
 const ResumeCard = ({ resume }) => {
     const wasUpdated = resume.updatedAt !== resume.createdAt
@@ -45,34 +47,57 @@ const ResumeCard = ({ resume }) => {
     );
 }
 
-const MoreMenu = (resumeId) => {
+const MoreMenu = ({ resumeId }) => {
     const [ showDeleteConfirmation, setShowDeleteConfirmation ] = useState(false)
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-0.5 right-0.5 opacity-0 transition-opacity group-hover:opacity-100"
-                >
-                    <MoreVerticalIcon className="size-5"/>
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-                <DropdownMenuItem
-                    className="flex items-center gap-2"
-                    onClick={() => setShowDeleteConfirmation(true)}
-                >
-                    <Trash2 className="size-5"/> Delete
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-0.5 right-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                        <MoreVerticalIcon className="size-5"/>
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    <DropdownMenuItem
+                        className="flex items-center gap-2"
+                        onClick={() => setShowDeleteConfirmation(true)}
+                    >
+                        <Trash2 className="size-5"/> Delete
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+            <DeleteConfirmationDialog
+                resumeId={resumeId}
+                open={showDeleteConfirmation}
+                onOpenChange={setShowDeleteConfirmation}
+            />
+        </>
     )
 }
 
 const DeleteConfirmationDialog = ({ resumeId, open, onOpenChange }) => {
     const [ isPending, startTransition ] = useTransition()
+
+    const handleDelete = async () => {
+        startTransition(async () => {
+            try {
+                await deleteResume(resumeId)
+                onOpenChange(false)
+            } catch (error) {
+                console.log(error)
+                toast("Something went wrong", {
+                    description: "There is something not right here, let's check it out",
+                    style: {background: "#fca5a5" },
+                    icon: <X />
+                })
+            }
+        })
+    }
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent>
@@ -86,7 +111,7 @@ const DeleteConfirmationDialog = ({ resumeId, open, onOpenChange }) => {
           <DialogFooter>
             <LoadingButton
                 variant="destructive"
-                // onClick={handleDelete}
+                onClick={handleDelete}
                 isLoading={isPending}
             >Delete
             </LoadingButton>
