@@ -7,7 +7,7 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GripHorizontal } from "lucide-react";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useId } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { CSS } from "@dnd-kit/utilities"
 import { cn } from "@/lib/utils";
@@ -38,7 +38,7 @@ const EducationItem = ({ index, form, remove, id }) => {
                     <FormItem>
                         <FormLabel>Degree</FormLabel>
                         <FormControl>
-                            <Input {...field} autoFocus />
+                            <Input {...field} autoFocus value={field.value ?? ""} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -51,7 +51,7 @@ const EducationItem = ({ index, form, remove, id }) => {
                     <FormItem>
                         <FormLabel>School</FormLabel>
                         <FormControl>
-                            <Input {...field} />
+                            <Input {...field} value={field.value ?? ""} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -89,6 +89,7 @@ const EducationItem = ({ index, form, remove, id }) => {
 }
 
 const EducationForm = ({ resumeData, setResumeData }) => {
+    const id = useId()
     const form = useForm({
         resolver: zodResolver(educationSchema),
         defaultValues: {
@@ -139,6 +140,7 @@ const EducationForm = ({ resumeData, setResumeData }) => {
             <Form {...form}>
                 <form className="space-y-5">
                     <DndContext
+                        id={id}
                         sensors={sensors}
                         onDragEnd={handleDragEnd}
                         collisionDetection={closestCenter}

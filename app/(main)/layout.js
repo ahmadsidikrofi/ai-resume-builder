@@ -1,3 +1,4 @@
+import PremiumModal from "@/components/premium/PremiumModal";
 import Navbar from "./Navbar";
 
 const Layout = ({ children }) => {
@@ -5,6 +6,7 @@ const Layout = ({ children }) => {
         <div className="flex min-h-screen flex-col">
             <Navbar />
             {children}
+            <PremiumModal />
         </div>
     );
 }

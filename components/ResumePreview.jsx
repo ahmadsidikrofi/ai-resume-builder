@@ -103,7 +103,7 @@ const WorkExperienceSection = ({ resumeData }) => {
                     style={{ 
                         color: colorHex
                     }}
-                >Woek experience</p>
+                >Work experience</p>
                 {workExperiencesNotEmpty.map((exp, i) => (
                     <div key={i} className="break-inside-avoid space-y-1">
                         <div className="flex items-center justify-between text-sm font-semibold">
@@ -199,7 +199,7 @@ const SkillsSection = ({ resumeData }) => {
     );
 }
 
-const ResumePreview = ({ resumeData, className }) => {
+const ResumePreview = ({ resumeData, className, contentRef }) => {
     const containerRef = useRef(null)
     const { width } = useDimensions(containerRef)
 
@@ -212,6 +212,8 @@ const ResumePreview = ({ resumeData, className }) => {
                 style={{
                     zoom: (1 / 794) * width
                 }}
+                ref={contentRef}
+                id="resumePreviewContent"
             >
                 {/* <pre>{JSON.stringify(resumeData, null, 2)}</pre> */}
                 <PersonalInfoHeader resumeData={resumeData} />

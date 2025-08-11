@@ -9,13 +9,20 @@ import { deleteResume } from "@/lib/server/existingResumeActions";
 import { mapToResumeValues } from "@/lib/utils";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import { formatDate } from "date-fns";
-import { MoreVerticalIcon, Trash2, X } from "lucide-react";
+import { MoreVerticalIcon, Printer, Trash2, X } from "lucide-react";
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
+import { useReactToPrint } from "react-to-print";
 import { toast } from "sonner";
 
 const ResumeCard = ({ resume }) => {
     const wasUpdated = resume.updatedAt !== resume.createdAt
+
+    const contentRef = useRef(null)
+    const reactToPrint = useReactToPrint({
+        contentRef,
+        documentTitle: resume.title || "Resume"
+    })
     return (
         <div className="group relative border rounded-lg border-transparent hover:border-green-300 transition-colors bg-secondary p-3">
             <div className="space-y-3">
@@ -37,17 +44,18 @@ const ResumeCard = ({ resume }) => {
                 >
                     <ResumePreview
                         resumeData={mapToResumeValues(resume)}
+                        contentRef={contentRef}
                         className="overflow-hidden shadow-sm transition-shadow group-hover:shadow-xl"
                     />
                     <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent"></div>
                 </Link>
             </div>
-            <MoreMenu resumeId={resume.id}/>
+            <MoreMenu resumeId={resume.id} onPrintClick={reactToPrint}/>
         </div>
     );
 }
 
-const MoreMenu = ({ resumeId }) => {
+const MoreMenu = ({ resumeId, onPrintClick }) => {
     const [ showDeleteConfirmation, setShowDeleteConfirmation ] = useState(false)
 
     return (
@@ -68,6 +76,12 @@ const MoreMenu = ({ resumeId }) => {
                         onClick={() => setShowDeleteConfirmation(true)}
                     >
                         <Trash2 className="size-5"/> Delete
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={onPrintClick}
+                        className="flex items-center gap-2"
+                    >
+                        <Printer className="size-5"/> Print
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

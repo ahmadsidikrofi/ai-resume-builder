@@ -26,8 +26,9 @@ const BorderStyleButton = ({ borderStyle, onChange }) => {
             size="icon"
             title="Change border style"
             onClick={handleClick}
+            className="dark:bg-black dark:hover:bg-dark"
         >
-            <Icon className="size-5"/>
+            <Icon className="size-5 dark:text-white dark:hover:text-dark"/>
         </Button>
     );
 }
