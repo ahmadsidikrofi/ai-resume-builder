@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -7,10 +9,11 @@ import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, us
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GripHorizontal } from "lucide-react";
-import { useEffect } from "react";
+import { GripHorizontal, Trash2 } from "lucide-react";
+import { useEffect, useId } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { CSS } from "@dnd-kit/utilities"
+import GenerateWorkExperienceButton from "./GenerateWorkExperienceButton.js";
 
 // Pindahkan WorkExperienceItem ke luar komponen utama untuk mencegah re-creation
 const WorkExperienceItem = ({ index, form, remove, id }) => {
@@ -26,11 +29,18 @@ const WorkExperienceItem = ({ index, form, remove, id }) => {
         >
             <div className="flex justify-between">
                 <span className="font-semibold">Work Experience {index + 1}</span>
-                <GripHorizontal className="size-5 cursor-grab text-green-500 focus:outline-none" 
+                <GripHorizontal className="size-5 cursor-grab active:cursor-grabbing  text-green-500 focus:outline-none" 
                     {...listeners}
                     {...attributes}
                 />
             </div>
+             <div className="flex justify-center my-3">
+                <GenerateWorkExperienceButton 
+                    onWorkExperienceGenerated={(exp) => 
+                        form.setValue(`workExperiences.${index}`, exp)
+                    }
+                />
+             </div>
 
             <FormField 
                 control={form.control}
@@ -98,12 +108,16 @@ const WorkExperienceItem = ({ index, form, remove, id }) => {
                     </FormItem>
                 )}
             />
-            <Button type="button" variant="destructive" onClick={() => remove(index)}>Remove</Button>
+            <Button type="button" size="sm" variant="destructive" onClick={() => remove(index)}>
+                <Trash2 />
+                Remove
+            </Button>
         </div>
     )
 }
 
 const WorkExperienceForm = ({ resumeData, setResumeData }) => {
+    const id = useId()
     const form = useForm({
         resolver: zodResolver(workExperienceSchema),
         defaultValues: {
@@ -154,6 +168,7 @@ const WorkExperienceForm = ({ resumeData, setResumeData }) => {
             <Form {...form}>
                 <form className="space-y-5">
                     <DndContext
+                        id={id}
                         sensors={sensors}
                         onDragEnd={handleDragEnd}
                         collisionDetection={closestCenter}

@@ -1,6 +1,7 @@
 import useDebounce from "@/app/hooks/useDebounce";
-import { saveResume } from "@/lib/server";
+import { saveResume } from "@/lib/server/resumeAction";
 import { fileReplacer } from "@/lib/utils";
+import { X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner"
@@ -58,7 +59,8 @@ const useAutoSaveResume = (resumeData) => {
                             save()
                         },
                     },
-                    type: "error"
+                    style: {background: "#fca5a5"},
+                    icon: <X />,
                 })
             } finally {
                 setIsSaving(false)
