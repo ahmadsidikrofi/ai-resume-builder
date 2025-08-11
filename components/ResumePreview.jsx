@@ -1,3 +1,5 @@
+'use client'
+
 import useDimensions from "@/app/hooks/useDimensions";
 import { cn } from "@/lib/utils";
 import { format, formatDate } from "date-fns";
