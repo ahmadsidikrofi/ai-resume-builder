@@ -3,12 +3,14 @@ import { saveResume } from "@/lib/server/resumeAction";
 import { fileReplacer } from "@/lib/utils";
 import { X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { toast } from "sonner"
 
 const useAutoSaveResume = (resumeData) => {
     const searchParams = useSearchParams()
     const [resumeId, setResumeId] = useState(resumeData.id)
+    const retryCountRef = useRef(0)
+    const maxRetries = 3
 
     const debounceResumeData = useDebounce(resumeData, 1500)
     const [lastSavedData, setLastSavedData] = useState(
@@ -19,7 +21,7 @@ const useAutoSaveResume = (resumeData) => {
 
     useEffect(() => {
         setIsError(false)
-
+        retryCountRef.current = 0
     }, [debounceResumeData])
 
     useEffect(() => {
@@ -37,6 +39,7 @@ const useAutoSaveResume = (resumeData) => {
                 })
                 setResumeId(updatedResume.id)
                 setLastSavedData(newData)
+                retryCountRef.current = 0
 
                 if (searchParams.get("resumeId") !== updatedResume.id) {
                     const newSearchParams = new URLSearchParams(searchParams)
@@ -50,18 +53,33 @@ const useAutoSaveResume = (resumeData) => {
                 // setIsSaving(false)
             } catch (error) {
                 setIsError(true)
+                retryCountRef.current++
                 console.error(error)
-                toast("Event has been created", {
-                    description: "Change has not save!",
-                    action: {
-                        label: "Retry",
-                        onClick: () => {
-                            save()
+                
+                // Hanya tampilkan toast jika belum mencapai max retries
+                if (retryCountRef.current <= maxRetries) {
+                    toast("Save failed", {
+                        description: error.message || "Change has not been saved!",
+                        action: {
+                            label: "Retry",
+                            onClick: () => {
+                                retryCountRef.current = 0
+                                save()
+                            },
                         },
-                    },
-                    style: {background: "#fca5a5"},
-                    icon: <X />,
-                })
+                        style: {background: "#fca5a5"},
+                        icon: <X />,
+                    })
+                    
+                    // Auto retry dengan delay jika masih di bawah max retries
+                    if (retryCountRef.current < maxRetries) {
+                        setTimeout(() => {
+                            if (retryCountRef.current < maxRetries) {
+                                save()
+                            }
+                        }, 3000)
+                    }
+                }
             } finally {
                 setIsSaving(false)
             }

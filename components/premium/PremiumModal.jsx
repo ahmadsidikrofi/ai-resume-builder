@@ -55,7 +55,7 @@ const PremiumModal = () => {
                   ))}
                 </ul>
                 <Button
-                  className="bg-slate-800 mt-8"
+                  className="bg-slate-600 hover:bg-slate-900 mt-8"
                   onClick={() =>
                     handlePremiumClick(
                       env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_MONTHLY

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { steps } from "./steps";
-import { FileUserIcon, PencilLine } from "lucide-react";
+import { FileUserIcon, Loader2, PencilLine } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Footer = ({ 
@@ -32,10 +32,16 @@ const Footer = ({
                     </Button>
                 </div>
                 <div className="flex gap-3 items-center">
-                    <Button asChild variant="secondary">
+                    <Button asChild variant="secondary" className={cn({ 'translate-x-[-5px]': isSaving })}>
                         <Link href="/resumes">Cancel</Link>
                     </Button>
-                    <p className={cn("text-muted-foreground opacity-0", isSaving && 'opacity-100')}>Saving...</p>
+                    {isSaving ? (
+                        <p className={cn("text-muted-foreground opacity-100 flex gap-2 items-center")}>
+                            <span><Loader2 className="size-5 animate-spin"/></span>
+                            <span className="">Saving...</span>
+                        </p>
+                    ) : ""}
+                    {/* <p className={cn("text-muted-foreground opacity-0", isSaving && 'opacity-100')}>Saving...</p> */}
                 </div>
             </div>
         </footer>

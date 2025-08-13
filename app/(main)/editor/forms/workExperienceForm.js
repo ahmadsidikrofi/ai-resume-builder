@@ -29,7 +29,7 @@ const WorkExperienceItem = ({ index, form, remove, id }) => {
         >
             <div className="flex justify-between">
                 <span className="font-semibold">Work Experience {index + 1}</span>
-                <GripHorizontal className="size-5 cursor-grab active:cursor-grabbing  text-green-500 focus:outline-none" 
+                <GripHorizontal className="size-5 cursor-grab active:cursor-grabbing  text-violet-500 focus:outline-none" 
                     {...listeners}
                     {...attributes}
                 />

@@ -1,16 +1,24 @@
+import usePremiumModal from "@/app/hooks/usePremiumModal";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import { generateSummary } from "@/lib/server/generateAIActions";
 import { WandSparkles, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useSubscriptionLevel } from "../../SubscriptionLevelProvider";
+import { canUseAITools } from "@/lib/permissions";
 
 const GenerateSummaryButton = ({resumeData, onSummaryGenerated}) => {
     const [isLoading, setIsLoading] = useState(false)
+    const premiumModal = usePremiumModal()
+    const subscriptionLevel = useSubscriptionLevel()
 
     const handleClick = async () => {
         // Block for non premium users
-
+        if (!canUseAITools(subscriptionLevel)) {
+            premiumModal.setOpen(true)
+            return
+        }
         try {
             setIsLoading(true)
             const aiResponse = await generateSummary(resumeData)

@@ -16,6 +16,9 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import LoadingButton from "@/components/LoadingButton";
+import usePremiumModal from "@/app/hooks/usePremiumModal";
+import { useSubscriptionLevel } from "../../SubscriptionLevelProvider";
+import { canUseAITools } from "@/lib/permissions";
 
 
 const InputDialog = ({ open, onOpenChange, onWorkExperienceGenerated }) => {
@@ -83,14 +86,21 @@ const InputDialog = ({ open, onOpenChange, onWorkExperienceGenerated }) => {
 
 const GenerateWorkExperienceButton = ({ onWorkExperienceGenerated }) => {
     const [showInputDialog, setShowInputDialog] = useState(false)
-    
+    const premiumModal = usePremiumModal()
+    const subscriptionLevel = useSubscriptionLevel()
+
     return (
         <>
             <Button
                 variant="outline"
                 type="button"
                 // Block for non-premium users
-                onClick={() => setShowInputDialog(true)}
+                onClick={() => {
+                  if (!canUseAITools(subscriptionLevel)) {
+                    premiumModal.setOpen(true)
+                  }
+                  setShowInputDialog()
+                }}
             >
                 <WandSparklesIcon className="size-5"/>
                 Smart fill (AI)

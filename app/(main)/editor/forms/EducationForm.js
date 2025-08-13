@@ -25,7 +25,7 @@ const EducationItem = ({ index, form, remove, id }) => {
         >
             <div className="flex justify-between">
                 <span className="font-semibold">Education {index + 1}</span>
-                <GripHorizontal className="size-5 cursor-grab text-green-500 focus:outline-none"
+                <GripHorizontal className="size-5 cursor-grab text-violet-500 focus:outline-none"
                     {...listeners}
                     {...attributes}
                 />

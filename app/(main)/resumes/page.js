@@ -7,6 +7,8 @@ import { resumeDataInclude } from "../editor/page";
 import ResumeCard from "./ResumeCard";
 import CreateResumeButton from "./CreateResumeButton";
 import BlankPreview from "@/components/BlankPreview";
+import { getUserSubscriptionLevel } from "@/lib/subscriptions";
+import { canCreateResume } from "@/lib/permissions";
 
 export const metadata = () => {
     title: "Your Resumes"
@@ -15,7 +17,7 @@ export const metadata = () => {
 const Page = async () => {
     const { userId } = await auth()
 
-    const [ resumes, countResume ] = await Promise.all([
+    const [ resumes, countResume, subscriptionLevel ] = await Promise.all([
         prisma.resume.findMany({
             where: { userId },
             orderBy: {
@@ -25,7 +27,8 @@ const Page = async () => {
         }),
         prisma.resume.count({
             where: { userId }
-        })
+        }),
+        getUserSubscriptionLevel(userId)
     ])
     return ( 
         <main className="max-w-7xl w-full mx-auto px-3 py-6 space-y-6">
@@ -35,7 +38,7 @@ const Page = async () => {
                 <p>Total: {countResume}</p>
             </div>
             <div className="flex flex-col sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full gap-3">
-                <BlankPreview canCreate={countResume < 3}/>
+                <BlankPreview canCreate={canCreateResume(subscriptionLevel, countResume)}/>
                 {resumes.map((resume) => (
                     <ResumeCard 
                         key={resume.id}
