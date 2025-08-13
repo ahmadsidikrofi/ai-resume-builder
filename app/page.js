@@ -10,20 +10,20 @@ export default function Home() {
       <div className="max-w-prose space-y-3">
         <Image 
           src={logo}
-          width={160}
-          height={160}
+          width={180}
+          height={180}
           alt="Logo"
-          className="mx-auto md:ms-0"
+          className=" md:ms-0"
         />
         <h1 className="scroll-m-20 text-4xl font-extrabold lg:text-5xl tracking-tight">
-          Create a {" "}
-          <span className="inline-block bg-gradient-to-tr from-green-600 to-green-400 text-transparent bg-clip-text">
-            Perfect Resume
+          Let {" "}
+          <span className="inline-block bg-gradient-to-tr from-violet-500 to-blue-400 text-transparent bg-clip-text">
+            Resumind think,
           </span> {" "}
-          in Minutes
+          so your resume can shine
         </h1>
         <p className="text-lg text-gray-500">
-          Our <span className="font-bold">AI resume builder</span> helps you design a professional resume even if you&apos;re not very smart
+          From <span className="font-bold">fresh graduates </span> to seasoned professionals <span className="bg-gradient-to-tr from-violet-500 to-blue-400 text-transparent bg-clip-text font-bold">Resumind</span> makes it easy to create a polished, professional resume in just a few minutes.
         </p>
         <Button asChild size="lg" variant="premium" className="">
           <Link href="/resumes">

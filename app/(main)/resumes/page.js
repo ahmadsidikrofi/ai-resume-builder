@@ -29,13 +29,13 @@ const Page = async () => {
     ])
     return ( 
         <main className="max-w-7xl w-full mx-auto px-3 py-6 space-y-6">
-            <CreateResumeButton canCreate={countResume < 2} />
+            {/* <CreateResumeButton canCreate={countResume < 3} /> */}
             <div className="space-y-1">
                 <h1 className="font-semibold text-3xl">Your resumes</h1>
                 <p>Total: {countResume}</p>
             </div>
             <div className="flex flex-col sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full gap-3">
-                <BlankPreview countResume={countResume}/>
+                <BlankPreview canCreate={countResume < 3}/>
                 {resumes.map((resume) => (
                     <ResumeCard 
                         key={resume.id}

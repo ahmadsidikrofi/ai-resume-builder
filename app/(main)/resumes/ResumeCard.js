@@ -24,7 +24,7 @@ const ResumeCard = ({ resume }) => {
         documentTitle: resume.title || "Resume"
     })
     return (
-        <div className="group relative border rounded-lg border-transparent hover:border-green-300 transition-colors bg-secondary p-3">
+        <div className="group relative border rounded-lg border-transparent hover:border-violet-300 transition-colors bg-secondary p-3">
             <div className="space-y-3">
                 <Link 
                     href={`/editor?resumeId=${resume.id}`}

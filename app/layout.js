@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { Geist, Inter, Manrope, Poppins } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "next-themes";
@@ -8,17 +8,17 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: {
-    template: "%s - Racik CV",
-    absolute: "Meracik CV kamu dengan AI terkini",
+    template: "%s - Resumind",
+    absolute: "Let Resumind think, so your resume can shine",
   },
-  description: "Meracik CV kamu dengan AI terkini untuk membuat profesional Resume yang akan membantumu mengemukan pekerjaan",
+  description: "From fresh graduates to seasoned professionals.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${inter.variable} antialiased`}>
+      <html lang="en" suppressHydrationWarning className={`${inter.className} antialiased`}>
+        <body >
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

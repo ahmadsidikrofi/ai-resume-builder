@@ -32,7 +32,7 @@ const ResumeEditor = ({ resumeToEdit }) => {
     return ( 
         <div className="flex grow flex-col">
             <header className="space-y-2 border-b px-3 py-5 text-center">
-                <h1 className="text-xl font-bold text-green-500">Design you resume</h1>
+                <h1 className="text-xl font-bold text-violet-500">Design you resume</h1>
                 <p className="text-muted-foreground text-sm">
                     Follow the steps bellow to create your resume. Your progress 
                     will be saved automatically.
