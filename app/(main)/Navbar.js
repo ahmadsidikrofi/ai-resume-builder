@@ -22,7 +22,7 @@ const Navbar = () => {
                         alt="Logo image"
                         className="rounded-full"
                     />
-                    <span className="font-bold text-xl">Resumind</span>
+                    <span className="font-bold text-xl tracking-tight">Resumind</span>
                 </Link>
                 <div className="flex items-center gap-3">
                     <ThemeToggle />
