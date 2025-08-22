@@ -1,6 +1,7 @@
 import stripe from "@/lib/stripe"
 import { env } from "@/env"
 import { clerkClient } from "@clerk/nextjs/server"
+import prisma from "@/lib/prisma"
 
 export async function POST(req) {
     try {
@@ -36,13 +37,52 @@ export async function POST(req) {
     }
 }
 
+// Helper untuk menghitung current period end jika Stripe tidak menyediakannya
+function computeSubscriptionPeriodEndUnix(subscription) {
+    if (subscription.current_period_end) {
+        return subscription.current_period_end
+    }
+
+    // Ambil anchor/start sebagai basis
+    const baseUnix = subscription.billing_cycle_anchor || subscription.start_date || subscription.created
+    if (!baseUnix) {
+        return Math.floor(Date.now() / 1000)
+    }
+
+    // Tentukan interval dan count dari price atau plan (legacy)
+    const priceRecurring = subscription.items?.data?.[0]?.price?.recurring
+    const interval = priceRecurring?.interval || subscription.plan?.interval || "month"
+    const intervalCount = priceRecurring?.interval_count || subscription.plan?.interval_count || 1
+
+    const baseDate = new Date(baseUnix * 1000)
+    switch (interval) {
+        case "day":
+            baseDate.setUTCDate(baseDate.getUTCDate() + intervalCount)
+            break
+        case "week":
+            baseDate.setUTCDate(baseDate.getUTCDate() + (7 * intervalCount))
+            break
+        case "month":
+            baseDate.setUTCMonth(baseDate.getUTCMonth() + intervalCount)
+            break
+        case "year":
+            baseDate.setUTCFullYear(baseDate.getUTCFullYear() + intervalCount)
+            break
+        default:
+            baseDate.setUTCMonth(baseDate.getUTCMonth() + intervalCount)
+            break
+    }
+
+    return Math.floor(baseDate.getTime() / 1000)
+}
+
 async function handleSessionComplete(session) { // Stripe.Checkout.Session
     const userId = session.metadata?.userId
     if (!userId) {
         throw new Error("User ID is missing in session metadata")
     }
 
-    await clerkClient.users.updateUserMetadata(userId, {
+    (await clerkClient()).users.updateUserMetadata(userId, {
         privateMetadata: {
             stripeCustomerId: session.customer
         }
@@ -50,9 +90,38 @@ async function handleSessionComplete(session) { // Stripe.Checkout.Session
 }
 
 async function handleSubscriptionCreatedOrUpdated(subscriptionId) { // string
-    console.log("handleSubscriptionCreatedOrUpdated");
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+
+    if (subscription.status === "active" || subscription.status === "trialing" || subscription.status === "past_due") {
+        const periodEndUnix = computeSubscriptionPeriodEndUnix(subscription)
+        const priceId = subscription.items?.data?.[0]?.price?.id || subscription.plan?.id
+        await prisma.userSubscription.upsert({
+            where: { userId: subscription.metadata?.userId },
+            create: {
+                userId: subscription.metadata.userId,
+                stripeCustomerId: subscription.customer,
+                stripeSubscriptionId: subscription.id,
+                stripePriceId: priceId,
+                stripeCurrentPeriodEnd: new Date(periodEndUnix * 1000),
+                stripeCancelAtPeriodEnd: Boolean(subscription.cancel_at_period_end)
+            },
+            update: {
+                stripePriceId: priceId,
+                stripeCurrentPeriodEnd: new Date(periodEndUnix * 1000),
+                stripeCancelAtPeriodEnd: Boolean(subscription.cancel_at_period_end)
+            }
+        })
+    } else {
+        await prisma.userSubscription.deleteMany({
+            where: { stripeCustomerId: subscription.customer }
+        })
+    }
 }
 
 async function handleSubscriptionDeleted(subscription) { // Stripe.Subscription
-    console.log("handleSubscriptionDeleted");
+    await prisma.userSubscription.deleteMany({
+        where: {
+            stripeCustomerId: subscription.customer
+        }
+    })
 }

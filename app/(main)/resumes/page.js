@@ -30,12 +30,23 @@ const Page = async () => {
         }),
         getUserSubscriptionLevel(userId)
     ])
+    
+    // Debug logging
+    console.log("Resume page debug:", {
+        userId,
+        countResume,
+        subscriptionLevel,
+        canCreate: canCreateResume(subscriptionLevel, countResume)
+    });
+    
     return ( 
         <main className="max-w-7xl w-full mx-auto px-3 py-6 space-y-6">
             {/* <CreateResumeButton canCreate={countResume < 3} /> */}
             <div className="space-y-1">
                 <h1 className="font-semibold text-3xl">Your resumes</h1>
                 <p>Total: {countResume}</p>
+                <p className="text-sm text-gray-600">Subscription: {subscriptionLevel}</p>
+                <p className="text-sm text-gray-600">Can create: {canCreateResume(subscriptionLevel, countResume) ? 'Yes' : 'No'}</p>
             </div>
             <div className="flex flex-col sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full gap-3">
                 <BlankPreview canCreate={canCreateResume(subscriptionLevel, countResume)}/>

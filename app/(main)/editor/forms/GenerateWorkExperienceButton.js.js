@@ -99,7 +99,7 @@ const GenerateWorkExperienceButton = ({ onWorkExperienceGenerated }) => {
                   if (!canUseAITools(subscriptionLevel)) {
                     premiumModal.setOpen(true)
                   }
-                  setShowInputDialog()
+                  setShowInputDialog(prev => !prev)
                 }}
             >
                 <WandSparklesIcon className="size-5"/>
