@@ -1,6 +1,9 @@
 import prisma from "@/lib/prisma";
 import stripe from "@/lib/stripe";
 import { auth } from "@clerk/nextjs/server";
+import GetSubscriptionButton from "./GetSubscriptionButton";
+import { formatDate } from "date-fns";
+import ManageSubscriptionButton from "./ManageSubscriptionButton";
 
 const Page = async () => {
     const { userId  } = await auth()
@@ -23,6 +26,19 @@ const Page = async () => {
                 Your current plan: {" "}
                 <span className="font-semibold">{priceInfo ? priceInfo.product.name : "Free"}</span>
             </p>
+            {subscription ? (
+                <> 
+                    {subscription.stripeCancelAtPeriodEnd && (
+                        <p className="text-destructive">
+                            Your subscription will be canceled on {" "}
+                            {formatDate(subscription.stripeCurrentPeriodEnd, "MMMM dd, yyyy")}
+                        </p>
+                    )}
+                    <ManageSubscriptionButton />
+                </>
+            ) : (
+                <GetSubscriptionButton />
+            )}
         </div>
     );
 }

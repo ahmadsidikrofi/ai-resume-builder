@@ -19,6 +19,7 @@ import LoadingButton from "@/components/LoadingButton";
 import usePremiumModal from "@/app/hooks/usePremiumModal";
 import { useSubscriptionLevel } from "../../SubscriptionLevelProvider";
 import { canUseAITools } from "@/lib/permissions";
+import { toast } from "sonner";
 
 
 const InputDialog = ({ open, onOpenChange, onWorkExperienceGenerated }) => {

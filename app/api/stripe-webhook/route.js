@@ -82,7 +82,7 @@ async function handleSessionComplete(session) { // Stripe.Checkout.Session
         throw new Error("User ID is missing in session metadata")
     }
 
-    (await clerkClient()).users.updateUserMetadata(userId, {
+    await (await clerkClient()).users.updateUserMetadata(userId, {
         privateMetadata: {
             stripeCustomerId: session.customer
         }
@@ -94,11 +94,20 @@ async function handleSubscriptionCreatedOrUpdated(subscriptionId) { // string
 
     if (subscription.status === "active" || subscription.status === "trialing" || subscription.status === "past_due") {
         const periodEndUnix = computeSubscriptionPeriodEndUnix(subscription)
-        const priceId = subscription.items?.data?.[0]?.price?.id || subscription.plan?.id
+        const priceId = subscription.items?.data?.[0]?.price?.id || subscription.plan?.id || subscription.plan?.id
+        // Pastikan userId selalu ada: metadata atau fallback melalui cus?tomer
+        const metadataUserId = subscription.metadata?.userId
+        const existingByCustomer = await prisma.userSubscription.findFirst({
+            where: { stripeCustomerId: subscription.customer }
+        })
+        const userId = metadataUserId || existingByCustomer?.userId
+        if (!userId) {
+            throw new Error("Cannot resolve userId for subscription update")
+        }
         await prisma.userSubscription.upsert({
-            where: { userId: subscription.metadata?.userId },
+            where: { userId },
             create: {
-                userId: subscription.metadata.userId,
+                userId,
                 stripeCustomerId: subscription.customer,
                 stripeSubscriptionId: subscription.id,
                 stripePriceId: priceId,

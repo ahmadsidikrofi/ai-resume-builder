@@ -17,6 +17,10 @@ const BorderStyleButton = ({ borderStyle, onChange }) => {
     const subscriptionLevel = useSubscriptionLevel()
     
     const handleClick = () => {
+        if (!canUseCustomizationTools(subscriptionLevel)) {
+            premiumModal.setOpen(true)
+            return
+        }
         const currentIndex = borderStyle ? borderStyles.indexOf(borderStyle) : 0
         const nextIndex = (currentIndex + 1) % borderStyles.length
         onChange(borderStyles[nextIndex])
@@ -31,14 +35,7 @@ const BorderStyleButton = ({ borderStyle, onChange }) => {
             variant="outline"
             size="icon"
             title="Change border style"
-            onClick={() => {
-                // Block for non premium users
-                if (!canUseCustomizationTools(subscriptionLevel)) {
-                    premiumModal.setOpen(true)
-                    return
-                }
-                handleClick
-            }}
+            onClick={handleClick}
             className="dark:bg-black dark:hover:bg-dark"
         >
             <Icon className="size-5 dark:text-white dark:hover:text-dark"/>
