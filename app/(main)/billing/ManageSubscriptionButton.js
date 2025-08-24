@@ -26,7 +26,11 @@ const ManageSubscriptionButton = () => {
         }
     }
     return ( 
-        <LoadingButton isLoading={isLoading} onClick={handleClick}>
+        <LoadingButton 
+            isLoading={isLoading} 
+            onClick={handleClick} 
+            className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+        >
             Manage Subscription
         </LoadingButton>
      );

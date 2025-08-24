@@ -2,7 +2,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Textarea } from "@/components/ui/textarea";
 import { summarySchema } from "@/lib/validated";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import GenerateSummaryButton from "./GenerateSummaryButton";
 
@@ -13,6 +13,9 @@ const SummaryForm = ({ resumeData, setResumeData }) => {
             summary: resumeData.summary || ""
         }
     })
+
+    const [isFocused, setIsFocused] = useState(false)
+    const [hasValue, setHasValue] = useState(false)  
 
     useEffect(() => {
         const { unsubscribe } = form.watch(async (values) => {
@@ -38,15 +41,31 @@ const SummaryForm = ({ resumeData, setResumeData }) => {
                             <FormItem>
                                 <FormLabel className="sr-only">Professional Summary</FormLabel>
                                 <FormControl>
-                                    <Textarea 
-                                        {...field}
-                                        placeholder="A brief, engaging text about yourself"
-                                    />
+                                    <div className="relative">
+                                        <Textarea
+                                            {...field}
+                                            className={`border-2 border-gray-200 rounded-xl bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-sm transition-all duration-300 focus:border-purple-400 focus:shadow-lg focus:shadow-purple-100/50 focus:bg-white ${isFocused ? "pt-8" : "pt-12"} pb-3 px-4`}
+                                            onFocus={() => setIsFocused(true)}
+                                            onBlur={() => setIsFocused(false)}
+                                            onChange={(e) => {
+                                                field.onChange(e)
+                                                setHasValue(!!e.target.value)
+                                            }}
+                                        />
+                                        <label
+                                            className={`absolute left-4 transition-all duration-300 pointer-events-none text-gray-500 ${isFocused || hasValue ? "top-2 text-xs text-purple-600 font-medium" : "top-4 text-base"}`}
+                                        >
+                                            A brief, engaging text about yourself
+                                        </label>
+                                    </div>
                                 </FormControl>
                                 <FormMessage />
-                                <GenerateSummaryButton 
+                                <GenerateSummaryButton
                                     resumeData={resumeData}
-                                    onSummaryGenerated={(summary) => form.setValue("summary", summary)}
+                                    onSummaryGenerated={(summary) => {
+                                        form.setValue("summary", summary)
+                                        setHasValue(!!summary)
+                                    }}
                                 />
                             </FormItem>
                         )}
