@@ -44,7 +44,7 @@ const SummaryForm = ({ resumeData, setResumeData }) => {
                                     <div className="relative">
                                         <Textarea
                                             {...field}
-                                            className={`border-2 border-gray-200 rounded-xl bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-sm transition-all duration-300 focus:border-purple-400 focus:shadow-lg focus:shadow-purple-100/50 focus:bg-white ${isFocused ? "pt-8" : "pt-12"} pb-3 px-4`}
+                                            className={`border-2 resize-y border-gray-200 rounded-xl bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-sm transition-all duration-300 focus:border-purple-400 focus:shadow-lg focus:shadow-purple-100/50 focus:bg-white ${isFocused ? "pt-8" : "pt-12"} pb-3 px-4`}
                                             onFocus={() => setIsFocused(true)}
                                             onBlur={() => setIsFocused(false)}
                                             onChange={(e) => {
