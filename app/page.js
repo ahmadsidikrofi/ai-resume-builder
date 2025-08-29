@@ -13,7 +13,7 @@ export default function Home() {
           width={180}
           height={180}
           alt="Logo"
-          className=" md:ms-0"
+          className="md:ms-0 max-sm:mx-auto mx-auto md:mx-0"
         />
         <h1 className="scroll-m-20 text-4xl font-extrabold lg:text-5xl tracking-tight">
           Let {" "}
