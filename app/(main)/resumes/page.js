@@ -45,8 +45,8 @@ const Page = async () => {
             <div className="space-y-1">
                 <h1 className="font-semibold text-3xl">Your resumes</h1>
                 <p>Total: {countResume}</p>
-                <p className="text-sm text-gray-600">Subscription: {subscriptionLevel}</p>
-                <p className="text-sm text-gray-600">Can create: {canCreateResume(subscriptionLevel, countResume) ? 'Yes' : 'No'}</p>
+                {/* <p className="text-sm text-gray-600">Subscription: {subscriptionLevel}</p>
+                <p className="text-sm text-gray-600">Can create: {canCreateResume(subscriptionLevel, countResume) ? 'Yes' : 'No'}</p> */}
             </div>
             <div className="flex flex-col sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full gap-3">
                 <BlankPreview canCreate={canCreateResume(subscriptionLevel, countResume)}/>
