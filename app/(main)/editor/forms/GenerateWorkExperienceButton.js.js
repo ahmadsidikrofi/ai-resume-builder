@@ -151,6 +151,7 @@ const GenerateWorkExperienceButton = ({ onWorkExperienceGenerated }) => {
                 onClick={() => {
                   if (!canUseAITools(subscriptionLevel)) {
                     premiumModal.setOpen(true)
+                    return
                   }
                   setShowInputDialog(prev => !prev)
                 }}
