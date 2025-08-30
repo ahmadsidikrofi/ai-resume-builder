@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { steps } from "./steps";
-import { FileUserIcon, Loader2, PencilLine } from "lucide-react";
+import { FileUserIcon, Loader2, PencilLine, SaveIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Footer = ({ 
@@ -37,8 +37,9 @@ const Footer = ({
                     </Button>
                     {isSaving ? (
                         <p className={cn("text-muted-foreground opacity-100 flex gap-2 items-center")}>
-                            <span><Loader2 className="size-5 animate-spin"/></span>
-                            <span className="">Saving...</span>
+                            <span className="max-sm:hidden"><Loader2 className="size-5 animate-spin"/></span>
+                            <SaveIcon className="size-5 animate-pulse sm:hidden"/>
+                            <span className="max-sm:hidden">Saving...</span>
                         </p>
                     ) : ""}
                     {/* <p className={cn("text-muted-foreground opacity-0", isSaving && 'opacity-100')}>Saving...</p> */}
