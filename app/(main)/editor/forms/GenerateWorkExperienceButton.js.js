@@ -77,7 +77,7 @@ const InputDialog = ({ open, onOpenChange, onWorkExperienceGenerated }) => {
                     placeholder={`E.g. "From Nov 2019 to Dec 2020 I worked at Google as a Software Engineer, tasks were: improving backend APIs, reducing latency, and collaborating with cross-functional teams."`}
                     autoFocus
                     onFocus={() => setIsFocused(true)}
-                    className="min-h-[160px] rounded-xl border-2 border-slate-200 bg-white/80 shadow-sm px-4 py-3 text-sm resize-none transition-all duration-200 placeholder:text-slate-400 focus:border-violet-400 focus:shadow-md focus:bg-white"
+                    className="min-h-[160px] rounded-xl border-2 border-slate-200 bg-white/80 shadow-sm px-4 py-3 text-sm resize-none transition-all duration-200 placeholder:text-slate-400 focus:border-purple-400 focus:shadow-md focus:bg-white"
                   />
                 </FormControl>
                 <div className="flex items-start gap-2 mt-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">

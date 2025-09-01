@@ -44,7 +44,7 @@ const SummaryForm = ({ resumeData, setResumeData }) => {
                                     <div className="relative">
                                         <Textarea
                                             {...field}
-                                            className={`border-2 resize-y border-gray-200 rounded-xl bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-sm transition-all duration-300 focus:border-purple-400 focus:shadow-lg focus:shadow-purple-100/50 focus:bg-white ${isFocused ? "pt-8" : "pt-12"} pb-3 px-4`}
+                                            className={`border-2 resize-y border-gray-200 rounded-xl  backdrop-blur-sm transition-all duration-300 focus:border-purple-400 focus:shadow-lg focus:shadow-purple-100/50 focus:bg-white ${isFocused ? "pt-8" : "pt-12"} pb-3 px-4`}
                                             onFocus={() => setIsFocused(true)}
                                             onBlur={() => setIsFocused(false)}
                                             onChange={(e) => {
@@ -53,7 +53,7 @@ const SummaryForm = ({ resumeData, setResumeData }) => {
                                             }}
                                         />
                                         <label
-                                            className={`absolute left-4 transition-all duration-300 pointer-events-none text-gray-500 ${isFocused || hasValue ? "top-2 text-xs text-purple-600 font-medium" : "top-4 text-base"}`}
+                                            className={`absolute left-4 transition-all duration-300 pointer-events-none text-gray-500 dark:text-white ${isFocused || hasValue ? "top-2 text-xs text-purple-600 font-medium" : "top-4 text-base"}`}
                                         >
                                             A brief, engaging text about yourself
                                         </label>

@@ -30,10 +30,10 @@ const CreateResumeButton = ({ canCreate }) => {
           <div className="space-y-3">
             <Button
               asChild
-              className="mx-auto flex gap-2 rounded-2xl dark:bg-blue-700 bg-blue-300 w-12 h-12 group-hover:bg-blue-800"
+              className="mx-auto flex gap-2 rounded-2xl dark:bg-blue-700 bg-blue-300 w-12 h-12 group-hover:bg-blue-800 hover:bg-blue-800 hover:cursor-pointer"
             >
               <Link href="/editor">
-                <PlusCircleIcon className="size-6" />
+                <PlusCircleIcon className="size-6 dark:text-white" />
               </Link>
             </Button>
             <p className="text-lg">New Resume</p>
@@ -41,10 +41,10 @@ const CreateResumeButton = ({ canCreate }) => {
         ) : (
           <div className="space-y-3">
             <Button
-              className="mx-auto flex gap-2 rounded-2xl dark:bg-blue-700  bg-blue-300 w-12 h-12 group-hover:bg-blue-800"
+              className="mx-auto flex gap-2 rounded-2xl dark:bg-blue-700   bg-blue-300 w-12 h-12 group-hover:bg-blue-800 hover:bg-blue-800 hover:cursor-pointer"
               onClick={() => premiumModal.setOpen(true)}
             >
-              <PlusCircleIcon className="size-6 text-blue-800 group-hover:text-white" />
+              <PlusCircleIcon className="size-6 text-blue-800 dark:text-white group-hover:text-white" />
             </Button>
             <p className="text-lg">New Resume</p>
           </div>

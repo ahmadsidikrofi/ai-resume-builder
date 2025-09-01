@@ -48,7 +48,7 @@ const PremiumModal = () => {
                 <h3 className="text-center text-lg font-bold">Premium</h3>
                 <ul className="list-inside space-y-2">
                   {premiumFeatures.map((premium) => (
-                    <li key={premium} className="flex items-center gap-2 text-nowrap text-sm">
+                    <li key={premium} className="flex items-center gap-2 text-nowrap max-sm:text-sm">
                       <Check className="size-4 text-violet-500" />
                       {premium}
                     </li>
@@ -73,7 +73,7 @@ const PremiumModal = () => {
                 </h3>
                 <ul className="list-inside space-y-2">
                   {premiumPlusFeatures.map((premiumPlus) => (
-                    <li key={premiumPlus} className="flex items-center gap-2 text-nowrap text-sm">
+                    <li key={premiumPlus} className="flex items-center gap-2 text-nowrap max-sm:text-sm">
                       <Check className="size-4 text-violet-500" />
                       {premiumPlus}
                     </li>
